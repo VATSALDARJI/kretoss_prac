@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
+  Animated,
+  PanResponder,
 } from "react-native";
+import Draggable from "react-native-draggable";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/MainNavigator";
 import {
@@ -32,6 +35,7 @@ const CameraScreen = ({ navigation }: CameraScreenProps) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const device = useCameraDevice(isFrontCamera ? "front" : "back");
   const cameraRef = React.useRef<Camera>(null);
   const bottomSheetRef = React.useRef<BottomSheet>(null);
@@ -88,6 +92,19 @@ const CameraScreen = ({ navigation }: CameraScreenProps) => {
         style={StyleSheet.absoluteFill}
         photo={true}
       />
+      {selectedEmoji && (
+        <Draggable
+          x={150}
+          y={300}
+          onPressIn={() => {}}
+          onPressOut={() => {}}
+          onDrag={(e) => {
+            console.log("e", e);
+          }}
+        >
+          <Text style={{ fontSize: 80 }}>{selectedEmoji}</Text>
+        </Draggable>
+      )}
       <TouchableOpacity
         style={
           (StyleSheet.absoluteFill, { position: "absolute", top: 60, left: 20 })
@@ -197,7 +214,7 @@ const CameraScreen = ({ navigation }: CameraScreenProps) => {
       </View>
       <EmojiPicker
         onEmojiSelected={(emoji) => {
-          console.log("Selected Emoji:", emoji.emoji);
+          setSelectedEmoji(emoji.emoji);
           setIsModalOpen(false);
           // TODO: Add this emoji as draggable sticker on camera preview
         }}
